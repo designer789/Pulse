@@ -2366,3 +2366,41 @@ section:not(.hero) .container {
     }
 }
 
+/* Fade In Animation Classes */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    will-change: opacity, transform;
+}
+
+.fade-in.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered animation delays */
+.fade-in-delay-1 { transition-delay: 0.2s; }
+.fade-in-delay-2 { transition-delay: 0.4s; }
+.fade-in-delay-3 { transition-delay: 0.6s; }
+.fade-in-delay-4 { transition-delay: 0.8s; }
+.fade-in-delay-5 { transition-delay: 1.0s; }
+.fade-in-delay-6 { transition-delay: 1.2s; }
+
+/* Optional: Different animation directions */
+.fade-in-left {
+    transform: translateX(-20px);
+}
+
+.fade-in-right {
+    transform: translateX(20px);
+}
+
+.fade-in-up {
+    transform: translateY(20px);
+}
+
+.fade-in-down {
+    transform: translateY(-20px);
+}
+

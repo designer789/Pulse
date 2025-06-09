@@ -1,6 +1,48 @@
 // This file will handle any interactive elements for the website
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Lenis smooth scrolling
+    const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+        mouseMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false,
+    });
+
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    // Initialize fade-in animations
+    const fadeElements = document.querySelectorAll('.fade-in');
+    
+    const fadeInObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                // Once the element is visible, we don't need to observe it anymore
+                fadeInObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        root: null, // Use viewport as root
+        rootMargin: '0px 0px -10% 0px', // Start animation slightly before element comes into view
+        threshold: 0.1 // Trigger when at least 10% of the element is visible
+    });
+
+    // Start observing all fade-in elements
+    fadeElements.forEach(element => {
+        fadeInObserver.observe(element);
+    });
+
     // Initialize any necessary JavaScript functionality
     
     // Hamburger menu toggle
@@ -38,9 +80,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80, // Account for header height
-                    behavior: 'smooth'
+                lenis.scrollTo(targetElement, {
+                    offset: -80, // Account for header height
+                    duration: 1.2,
+                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
                 });
             }
         });
