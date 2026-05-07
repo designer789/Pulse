@@ -407,7 +407,7 @@ nav ul li a:hover::after {
     padding: 0 20px;
 }
 
-/* Updated Hero Heading Animation */
+/* Hero Heading Animation */
 .hero-content h1 {
     font-size: 5.5rem;
     line-height: 1.1;
@@ -416,37 +416,59 @@ nav ul li a:hover::after {
     letter-spacing: -0.02em;
 }
 
+@keyframes wordEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fades the actual text to transparent so the gradient ::before shows through */
+@keyframes textColorFade {
+    0%, 10%  { color: var(--dark); }
+    40%, 60% { color: transparent; }
+    80%, 100% { color: var(--dark); }
+}
+
+/* Fades the gradient layer in and out in sync */
+@keyframes fadeGradient {
+    0%, 10%  { opacity: 0; }
+    30%, 60% { opacity: 1; }
+    80%, 100% { opacity: 0; }
+}
+
 .hero-content h1 span {
     display: inline-block;
     position: relative;
     color: var(--dark);
-    animation: textColorFade 6s infinite ease-out;
 }
 
+/* wordEntrance runs once on load; textColorFade loops after it settles.
+   Delays staggered 2 s apart so the gradient scans Launch → Curve → Soar. */
 .hero-content h1 span:nth-child(1) {
-    animation-delay: 0s;
+    animation:
+        wordEntrance  0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.10s both,
+        textColorFade 6s  linear                          1.0s  infinite;
 }
 
 .hero-content h1 span:nth-child(2) {
-    animation-delay: 2s;
+    animation:
+        wordEntrance  0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both,
+        textColorFade 6s  linear                          3.0s  infinite;
 }
 
 .hero-content h1 span:nth-child(3) {
-    animation-delay: 4s;
+    animation:
+        wordEntrance  0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.40s both,
+        textColorFade 6s  linear                          5.0s  infinite;
 }
 
-@keyframes textColorFade {
-    0%, 10% {
-        color: var(--dark);
-    }
-    40%, 60% {
-        color: transparent;
-    }
-    80%, 100% {
-        color: var(--dark);
-    }
-}
-
+/* Gradient overlay — absolutely positioned over the text,
+   revealed only while textColorFade makes the text transparent */
 .hero-content h1 span::before {
     content: attr(data-text);
     position: absolute;
@@ -459,37 +481,31 @@ nav ul li a:hover::after {
     background-clip: text;
     color: transparent;
     opacity: 0;
-    transition: opacity 0.3s ease;
     z-index: 1;
-    animation: fadeGradient 6s infinite ease-out;
-}
-
-@keyframes fadeGradient {
-    0%, 10% {
-        opacity: 0;
-    }
-    30%, 60% {
-        opacity: 1;
-    }
-    80%, 100% {
-        opacity: 0;
-    }
-}
-
-.hero-content h1 span::before {
-    animation: fadeGradient 6s infinite ease-in-out;
 }
 
 .hero-content h1 span:nth-child(1)::before {
-    animation-delay: 0s;
+    animation: fadeGradient 6s linear 1.0s infinite;
 }
 
 .hero-content h1 span:nth-child(2)::before {
-    animation-delay: 2s;
+    animation: fadeGradient 6s linear 3.0s infinite;
 }
 
 .hero-content h1 span:nth-child(3)::before {
-    animation-delay: 4s;
+    animation: fadeGradient 6s linear 5.0s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-content h1 span {
+        animation: none;
+        opacity: 1;
+        transform: none;
+        color: var(--dark);
+    }
+    .hero-content h1 span::before {
+        display: none;
+    }
 }
 
 .hero-content p {
@@ -555,61 +571,47 @@ nav ul li a:hover::after {
 
 /* Tablet adjustments */
 @media (max-width: 768px) {
-    /* Header adjustments */
-    header {
-        height: auto;
-        padding: 0.5rem 0;
-    }
-    
-    header .container {
-        flex-wrap: wrap;
-        padding: 16px;
-        gap: 10px;
-    }
-    
-    .logo {
-        margin-bottom: 0.5rem;
-    }
-    
-    nav {
-        order: 3;
-        width: 100%;
-        margin-top: 1rem;
-    }
-    
-    nav ul {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    
-    nav ul li {
-        margin: 0.5rem 1rem;
-    }
-    
-    .cta-button {
-        margin-left: auto;
-    }
-    
     /* Hero adjustments */
     .hero {
-        min-height: 100vh; /* Change from fixed height to minimum height */
+        min-height: 100vh;
         height: auto;
-        padding: 5rem 0;
+        padding: 5rem 0 8rem;
+        perspective: none;
     }
-    
+
+    .hero::before {
+        transform: none;
+        will-change: auto;
+        transition: none;
+        opacity: 0.3;
+    }
+
     .hero-content {
-        padding: 0 16px;
+        padding: 0;
     }
-    
+
     .hero-content h1 {
-        font-size: 3.5rem;
-        margin-bottom: 1.5rem;
+        font-size: 3rem;
+        line-height: 1.08;
+        letter-spacing: -0.025em;
+        margin-bottom: 1.25rem;
+        text-align: left;
     }
-    
+
+    .hero-content h1 span {
+        display: block;
+    }
+
     .hero-content p {
         font-size: 1.0625rem;
-        max-width: 30rem;
+        line-height: 1.7;
+        max-width: 100%;
         margin-bottom: 2rem;
+        text-align: left;
+    }
+
+    .hero-buttons {
+        justify-content: flex-start;
     }
 }
 
@@ -618,21 +620,23 @@ nav ul li a:hover::after {
     /* Further reduce font sizes */
     .hero-content h1 {
         font-size: 2.75rem;
+        letter-spacing: -0.03em;
         margin-bottom: 1.25rem;
     }
-    
+
     .hero-content p {
         font-size: 1rem;
         max-width: 100%;
         margin-bottom: 1.75rem;
     }
-    
-    /* Adjust button layout */
+
+    /* Stack buttons on small screens */
     .hero-buttons {
         flex-direction: column;
+        align-items: flex-start;
         gap: 0.75rem;
     }
-    
+
     .btn-secondary {
         margin-left: 0;
     }
@@ -899,6 +903,12 @@ body.menu-open {
     object-fit: contain;
 }
 
+@media (max-width: 900px) {
+    .features .section-header h2 {
+        font-size: 2rem;
+    }
+}
+
 /* Responsive adjustments for bento layout */
 @media (max-width: 768px) {
     .bento-layout {
@@ -910,9 +920,14 @@ body.menu-open {
     }
     
     .section-header h2 {
-        font-size: 2rem;
+        font-size: 1.75rem;
+        letter-spacing: -0.025em;
     }
-    
+
+    .bento-card h3 {
+        font-size: 1.375rem;
+    }
+
     .bento-card.full-width {
         flex-direction: column;
         gap: 2rem;
@@ -956,9 +971,10 @@ body.menu-open {
     }
     
     .section-header h2 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
+        letter-spacing: -0.03em;
     }
-    
+
     .card-image-top {
         height: 160px;
     }
@@ -1070,7 +1086,7 @@ h1, h2, h3, h4, h5, h6 {
     
     .bento-card p {
         font-size: 0.95rem;
-        line-height: 1.5;
+        line-height: 1.65;
     }
     
     /* Make images slightly smaller on very small screens */
@@ -1617,7 +1633,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .tech-behind .section-header h2 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
     
     .tech-features {
@@ -1644,11 +1660,11 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .tech-feature h3 {
-        font-size: 1rem;
+        font-size: 1.0625rem;
     }
-    
+
     .tech-feature p {
-        font-size: 0.875rem;
+        font-size: 0.9375rem;
     }
     
     .tech-image {
@@ -1822,23 +1838,27 @@ h1, h2, h3, h4, h5, h6 {
     .tokenomics {
         padding: 4rem 0;
     }
-    
+
     .tokenomics-content {
         grid-template-columns: 1fr;
         gap: 3rem;
     }
-    
+
     .token-name p, .token-supply p {
         font-size: 1.25rem;
     }
-    
+
     .chart-container {
         flex: 0 0 150px;
     }
-    
+
     .chart-placeholder {
         width: 150px;
         height: 150px;
+    }
+
+    .token-utility {
+        padding-left: 0;
     }
 }
 
@@ -1869,7 +1889,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .tokenomics .section-header h2 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
     
     .chart-placeholder {
@@ -1986,7 +2006,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .faq .section-header h2 {
-        font-size: 2rem;
+        font-size: 1.75rem;
     }
     
     .faq-question h3 {
@@ -2015,9 +2035,9 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .faq .section-header h2 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
-    
+
     .faq-question {
         padding: 1.25rem 0;
     }
@@ -2055,21 +2075,19 @@ h1, h2, h3, h4, h5, h6 {
     content: '';
     position: absolute;
     top: 0;
-    width: 100px;
+    width: 80px;
     height: 100%;
     z-index: 3;
     pointer-events: none;
 }
 
 .platform-icons-marquee::before {
-    left: 50%;
-    transform: translateX(-600px); /* Half of max-width */
+    left: 0;
     background: linear-gradient(to right, var(--light-bg), transparent);
 }
 
 .platform-icons-marquee::after {
-    right: 50%;
-    transform: translateX(600px); /* Half of max-width */
+    right: 0;
     background: linear-gradient(to left, var(--light-bg), transparent);
 }
 
@@ -2133,14 +2151,11 @@ h1, h2, h3, h4, h5, h6 {
     .marquee-container {
         max-width: 1000px;
     }
-    
-    .platform-icons-marquee::before {
-        transform: translateX(-500px);
-    }
-    
-    .platform-icons-marquee::after {
-        transform: translateX(500px);
-    }
+}
+
+/* Nav social — shown only inside the mobile hamburger overlay */
+.nav-social {
+    display: none;
 }
 
 /* Add styles for social media icons */
@@ -2363,6 +2378,45 @@ section:not(.hero) .container {
 @media (max-width: 480px) {
     .bento-card.half-width .card-content {
         padding: 0 1rem 1rem;
+    }
+}
+
+/* Mobile: hide header social icons, show them inside the hamburger overlay */
+@media (max-width: 768px) {
+    .social-links {
+        display: none;
+    }
+
+    .nav-social {
+        display: flex;
+        gap: 1.25rem;
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-social .social-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: rgba(97, 92, 246, 0.07);
+        font-size: 1.25rem;
+        color: var(--text-dark);
+        transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-social .social-icon:hover {
+        background: rgba(97, 92, 246, 0.14);
+        color: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    .nav-social .social-icon img {
+        width: 22px;
+        height: 22px;
     }
 }
 
