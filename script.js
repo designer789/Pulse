@@ -49,16 +49,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger-menu');
     const nav = document.querySelector('.main-nav');
     const body = document.body;
-    
+
     if (hamburger) {
         hamburger.addEventListener('click', function() {
             hamburger.classList.toggle('active');
             nav.classList.toggle('active');
-            body.classList.toggle('menu-open'); // Prevents scrolling when menu is open
+            body.classList.toggle('menu-open');
         });
     }
-    
-    // Close menu when clicking on a link
+
+    // Close menu when clicking on a nav link (including nav-social links)
     const navLinks = document.querySelectorAll('.main-nav a');
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
